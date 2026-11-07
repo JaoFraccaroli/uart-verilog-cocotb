@@ -1,0 +1,49 @@
+name: Testes
+
+on: [push, pull_request]
+
+jobs:
+  simulacao:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar o simulador (Icarus Verilog) e o cocotb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+          pip install -r requirements.txt
+
+      - name: Testes (cocotb + Pytest)
+        run: pytest --junitxml=relatorios/junit.xml
+
+      - name: Teste de mutação no Verilog
+        run: python qualidade/mutacao.py
+
+      - name: Resumo
+        if: always()
+        run: |
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import glob, xml.etree.ElementTree as ET
+          total = falhas = pulados = 0
+          for arquivo in glob.glob("sim_build/*/resultados.xml"):
+              for caso in ET.parse(arquivo).getroot().iter("testcase"):
+                  total += 1
+                  falhas += caso.find("failure") is not None
+                  pulados += caso.find("skipped") is not None
+          print("## Circuitos testados em simulação\n")
+          print(f"- Testes cocotb executados: {total - pulados} ({falhas} falhando, {pulados} pulados)\n")
+          PY
+          cat relatorios/mutacao.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+
+      - name: Formas de onda (abrir no GTKWave ou Surfer)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: formas-de-onda
+          path: sim_build/**/*.fst
+          if-no-files-found: ignore

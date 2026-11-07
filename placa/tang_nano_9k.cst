@@ -1,0 +1,27 @@
+// Pinos da Sipeed Tang Nano 9K para o circuito eco_uart.
+// ATENÇÃO: ainda não testado na placa. Confira os números na documentação
+// oficial da Sipeed (esquemático da Tang Nano 9K) antes de gravar.
+
+IO_LOC "clk" 52;            // cristal de 27 MHz
+IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+IO_LOC "botao_reset_n" 4;   // botão S1/S2 (0 quando apertado)
+IO_PORT "botao_reset_n" IO_TYPE=LVCMOS18 PULL_MODE=UP;
+
+IO_LOC "uart_tx" 17;        // FPGA -> computador (pelo USB da placa)
+IO_PORT "uart_tx" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "uart_rx" 18;        // computador -> FPGA
+IO_PORT "uart_rx" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+IO_LOC "leds_n[0]" 10;
+IO_LOC "leds_n[1]" 11;
+IO_LOC "leds_n[2]" 13;
+IO_LOC "leds_n[3]" 14;
+IO_LOC "leds_n[4]" 15;
+IO_LOC "leds_n[5]" 16;
+IO_PORT "leds_n[0]" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8;
+IO_PORT "leds_n[1]" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8;
+IO_PORT "leds_n[2]" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8;
+IO_PORT "leds_n[3]" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8;
+IO_PORT "leds_n[4]" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8;
+IO_PORT "leds_n[5]" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8;
